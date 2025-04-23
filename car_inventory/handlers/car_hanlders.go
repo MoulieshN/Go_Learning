@@ -6,77 +6,80 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 )
 
 var (
 	sm sync.Mutex
 )
 
-// func CarHandler(w http.ResponseWriter, r *http.Request) {
-// 	switch r.Method {
-// 	case http.MethodGet:
-// 		GetCarHandler(w, r)
-// 	case http.MethodDelete:
-// 		deleteCarHandler(w, r)
-// 	default:
-// 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-// 	}
-// }
+/*
+net/http handlers
 
-// func AddCarHandler(w http.ResponseWriter, r *http.Request) {
-// 	sm.Lock()
-// 	defer sm.Unlock()
+	func CarHandler(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			GetCarHandler(w, r)
+		case http.MethodDelete:
+			deleteCarHandler(w, r)
+		default:
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		}
+	}
 
-// 	car := &model.Car{}
+	func AddCarHandler(w http.ResponseWriter, r *http.Request) {
+		sm.Lock()
+		defer sm.Unlock()
 
-// 	if err := json.NewDecoder(r.Body).Decode(&car); err != nil {
-// 		fmt.Errorf("Invalid request body: %v", err)
-// 		http.Error(w, "Invalid request body:", http.StatusBadRequest)
-// 		return
-// 	}
+		car := &model.Car{}
 
-// 	car.InsertCar()
-// 	if car.ID != 0 {
-// 		fmt.Println("Successfully created with id: %v", car.ID)
-// 		w.Header().Set("Content-Type", "application/json")
-// 		w.WriteHeader(http.StatusCreated)
-// 		json.NewEncoder(w).Encode(car)
-// 	}
+		if err := json.NewDecoder(r.Body).Decode(&car); err != nil {
+			fmt.Errorf("Invalid request body: %v", err)
+			http.Error(w, "Invalid request body:", http.StatusBadRequest)
+			return
+		}
 
-// 	w.WriteHeader(http.StatusInternalServerError)
-// }
+		car.InsertCar()
+		if car.ID != 0 {
+			fmt.Println("Successfully created with id: %v", car.ID)
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusCreated)
+			json.NewEncoder(w).Encode(car)
+		}
 
-// func GetCarHandler(w http.ResponseWriter, r *http.Request) {
-// 	sm.Lock()
-// 	defer sm.Unlock()
-// 	car := &model.Car{}
-// 	idStr := strings.TrimPrefix(r.URL.Path, "/cars/")
-// 	id, err := strconv.ParseInt(idStr, 10, 64)
-// 	if err != nil {
-// 		http.Error(w, "Invalid ID", http.StatusBadRequest)
-// 		return
-// 	}
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 
-// 	car.GetCar(id)
+	func GetCarHandler(w http.ResponseWriter, r *http.Request) {
+		sm.Lock()
+		defer sm.Unlock()
+		car := &model.Car{}
+		idStr := strings.TrimPrefix(r.URL.Path, "/cars/")
+		id, err := strconv.ParseInt(idStr, 10, 64)
+		if err != nil {
+			http.Error(w, "Invalid ID", http.StatusBadRequest)
+			return
+		}
 
-// 	json.NewEncoder(w).Encode(car)
-// }
+		car.GetCar(id)
 
-// func deleteCarHandler(w http.ResponseWriter, r *http.Request) {
-// 	idStr := strings.TrimPrefix(r.URL.Path, "/cars/")
-// 	id, err := strconv.ParseInt(idStr, 10, 64)
-// 	car := &model.Car{}
-// 	if err != nil {
-// 		http.Error(w, "Invalid ID", http.StatusBadRequest)
-// 		return
-// 	}
+		json.NewEncoder(w).Encode(car)
+	}
 
-// 	car.DeleteCar(id)
+	func deleteCarHandler(w http.ResponseWriter, r *http.Request) {
+		idStr := strings.TrimPrefix(r.URL.Path, "/cars/")
+		id, err := strconv.ParseInt(idStr, 10, 64)
+		car := &model.Car{}
+		if err != nil {
+			http.Error(w, "Invalid ID", http.StatusBadRequest)
+			return
+		}
 
-// 	w.WriteHeader(http.StatusNoContent) // No content to return
-// }
+		car.DeleteCar(id)
 
+		w.WriteHeader(http.StatusNoContent) // No content to return
+	}
+*/
 func AddCarHandler(c *fiber.Ctx) error {
 	sm.Lock()
 	defer sm.Unlock()
