@@ -1,12 +1,16 @@
 package handlers
 
 import (
+	"car_inventory/config"
 	model "car_inventory/models"
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"sync"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/redis/go-redis/v9"
 )
 
 var (
@@ -103,6 +107,9 @@ func GetCarHandler(c *fiber.Ctx) error {
 	defer sm.Unlock()
 	car := &model.Car{}
 
+	// Check if the car already present in cache
+	// if not then only goto mysql db
+
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -111,9 +118,25 @@ func GetCarHandler(c *fiber.Ctx) error {
 		})
 	}
 
+	val, err := config.Cache.Get(c.Context(), strconv.FormatInt(int64(id), 10)).Result()
+	if err != nil {
+		if err == redis.Nil {
+			fmt.Printf("Key is not added in the cache: %v \n", err)
+		}
+		fmt.Printf("Unable to get the key from redis: %v \n", err)
+	} else {
+		if err := json.Unmarshal([]byte(val), &car); err != nil {
+			fmt.Printf("Unable to unmarshall the value from redis: %v \n", err)
+		}
+		return c.Status(fiber.StatusOK).JSON(val)
+	}
+
+	b, _ := json.Marshal(car)
+	config.Cache.Set(c.Context(), strconv.FormatInt(int64(id), 10), b, 60*time.Minute)
+
 	car.GetCar(int64(id))
 	fmt.Println("Successfull retrieved car record: id: %v", id)
-	return c.Status(fiber.StatusAccepted).JSON(car)
+	return c.Status(fiber.StatusOK).JSON(car)
 }
 
 func DeleteCarHandler(c *fiber.Ctx) error {

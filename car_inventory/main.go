@@ -13,6 +13,7 @@ import (
 func main() {
 
 	config.ConnectDB()
+	config.ConnectCache()
 
 	app := fiber.New()
 
