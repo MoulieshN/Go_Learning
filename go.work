@@ -4,4 +4,5 @@ use (
     ./observer_pattern
     ./car_inventory
     ./decorator_pattern
+    ./graph_ql
 )
